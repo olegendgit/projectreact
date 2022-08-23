@@ -1,34 +1,55 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import TodoForm from './TodoForm';
 import Todo from './Todo';
 
 function TodoList() {
   const [todos, setTodos] = useState([]);
 
-const addTodo = todo => {
-  if(!todo.text || /^\s*$/.test(todo.text)) {
-    return;
-  }
-  
-  const newTodos =[todo, ...todos];
+  const addTodo = (todo) => {
+    if (!todo.text || /^\s*$/.test(todo.text)) {
+      return;
+    }
 
-  setTodos(newTodos);
-  console.log(todo, ...todos);
-};
-  const completeTodo = id => {
-    let updateTodos = todos.map(todo =>{
+    const newTodos = [todo, ...todos];
+    console.log('newTodos: ', newTodos);
+
+    setTodos(newTodos);
+  };
+
+  const updateTodo = (id, text) => {
+    const newTodos = [...todos];
+    const todo = newTodos.find((t) => t.id === id);
+    todo.text = text;
+    setTodos(newTodos);
+  };
+
+  const removeTodo = (id) => {
+    const newTodos = [...todos];
+    const todoIndex = newTodos.findIndex((t) => t.id === id);
+    newTodos.splice(todoIndex, 1);
+    setTodos(newTodos);
+  };
+
+  const completeTodo = (id) => {
+    let updatedTodos = todos.map((todo) => {
       if (todo.id === id) {
-        todo.isComplete = !todo.isComplete
+        todo.isComplete = !todo.isComplete;
       }
-      return todo 
-    })
+      return todo;
+    });
     setTodos(updatedTodos);
   };
+
   return (
     <div>
       <h1>What the plan for Today?</h1>
       <TodoForm onSubmit={addTodo} />
-      <Todo todos={todos} completeTodo={completeTodo} />
+      <Todo
+        todos={todos}
+        updateTodo={updateTodo}
+        completeTodo={completeTodo}
+        removeTodo={removeTodo}
+      />
     </div>
   );
 }
